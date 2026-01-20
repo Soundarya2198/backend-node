@@ -1,0 +1,77 @@
+service: backend-node
+
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-south-1
+  environment:
+    USERS_TABLE: ${env:USERS_TABLE}
+    JWT_SECRET: ${env:JWT_SECRET}
+    ITEMS_TABLE: ${env:ITEMS_TABLE}
+
+functions:
+  authorizer:
+    handler: functions/authorizer.handler
+
+  register:
+    handler: functions/auth/register.register
+    events:
+      - http:
+          path: register
+          method: post
+
+  login:
+    handler: functions/auth/login.login
+    events:
+      - http:
+          path: login
+          method: post
+
+  createItem:
+    handler: functions/items/create.createItem
+    events:
+      - http:
+          path: createItem
+          method: post
+          authorizer:
+            name: authorizer
+            type: token
+            identitySource: method.request.header.Authorization
+
+  getItem:
+    handler: functions/items/get.getItem
+    events:
+      - http:
+          path: getItem/{itemId}
+          method: get
+          authorizer:
+            name: authorizer
+            type: token
+            identitySource: method.request.header.Authorization
+
+  updateItem:
+    handler: functions/items/update.updateItem
+    events:
+      - http:
+          path: updateItem/{itemId}
+          method: put
+          authorizer:
+            name: authorizer
+            type: token
+            identitySource: method.request.header.Authorization
+
+  deleteItem:
+    handler: functions/items/delete.deleteItem
+    events:
+      - http:
+          path: deleteItem/{itemId}
+          method: delete
+          authorizer:
+            name: authorizer
+            type: token
+            identitySource: method.request.header.Authorization
+
+plugins:
+  - serverless-offline
