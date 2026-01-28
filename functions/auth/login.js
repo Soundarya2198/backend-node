@@ -23,7 +23,7 @@ export const login = async (event) => {
         Limit: 1,
       })
     );
-    if (!result.Items) {
+    if (!result.Items || result.Items.length === 0) {
       return response(401, { message: "Invalid email or password." });
     }
 

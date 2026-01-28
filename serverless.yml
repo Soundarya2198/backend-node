@@ -72,6 +72,17 @@ functions:
             name: authorizer
             type: token
             identitySource: method.request.header.Authorization
+  listItems:
+    handler: functions/items/list.listItems
+    events:
+      - http:
+          path: listItems
+          method: get
+          authorizer:
+            name: authorizer
+            type: token
+            identitySource: method.request.header.Authorization
+  
 
 plugins:
   - serverless-offline

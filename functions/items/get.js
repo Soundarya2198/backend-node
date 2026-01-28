@@ -5,7 +5,6 @@ import { GetCommand } from "@aws-sdk/lib-dynamodb";
 export const getItem = async (event) => {
   try {
     const itemId = event.pathParameters.itemId;
-    const userId = event.requestContext.authorizer.principalId;     
     const result = await ddb.send(
       new GetCommand({
         TableName: process.env.ITEMS_TABLE, 
